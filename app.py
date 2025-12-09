@@ -5,27 +5,24 @@ import numpy as np
 from PIL import Image
 import gdown
 
-# ==========================
-# CONFIGURACIÓN
-# ==========================
 st.set_page_config(page_title="Clasificador de Galaxias", page_icon="✨")
-
 st.title("✨ Clasificación automática de galaxias")
 st.write("Modelo CNN entrenado para clasificar galaxias **Elípticas** y **Espirales**.")
 
-# ==========================
-# DESCARGA DEL MODELO DESDE DRIVE
-# ==========================
 MODEL_PATH = "mejor_cnn_galaxias.h5"
-
-# 👉 Pega aquí TU ID real de Google Drive
-DRIVE_FILE_ID = "1AbCDeFGHiJKLmnopQRsTuVWxyz"
+DRIVE_FILE_ID = "1dPFzrqdKQZzqtO_IBFaLNWH9hDud6Z8z"  # tu ID
 
 def ensure_model_file():
     if not os.path.exists(MODEL_PATH):
-        st.write("Descargando modelo desde Google Drive… (solo la primera vez)")
+        st.info("📥 Descargando modelo desde Google Drive (solo la primera vez)…")
         url = f"https://drive.google.com/uc?id={DRIVE_FILE_ID}"
-        gdown.download(url, MODEL_PATH, quiet=False)
+        try:
+            # quiet=False para ver progreso, fuzzy=True para manejar confirmaciones de Drive
+            gdown.download(url, MODEL_PATH, quiet=False, fuzzy=True)
+        except Exception as e:
+            st.error("❌ No se pudo descargar el modelo desde Drive.")
+            st.error("Verifica que el archivo sea público y vuelve a intentar.")
+            st.stop()
 
 @st.cache_resource
 def cargar_modelo():
